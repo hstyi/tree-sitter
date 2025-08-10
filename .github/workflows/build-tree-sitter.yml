@@ -14,12 +14,10 @@ jobs:
           - os: macos-15
             arch: 'aarch64'
 
-          - os: windows-11-arm
-            arch: 'arm64'
-          - os: windows-11-arm
+#          - os: windows-11-arm
+#            arch: 'arm64'
+          - os: windows-latest
             arch: 'x64'
-          - os: windows-11-arm
-            arch: 'x86'
 
           - os: ubuntu-latest
             arch: 'x64'
@@ -56,7 +54,7 @@ jobs:
         shell: cmd
         working-directory: tree-sitter
         run: |
-          zig c++ -g0 -fno-sanitize=undefined -shared -target x86_64-windows -I . -I lib/include -o tree-sitter.dll
+          zig c++ -g0 -fno-sanitize=undefined -shared -target x86_64-windows -I . -I lib/include lib/src/lib.c -o tree-sitter.dll
 
       - name: Upload tree-sitter artifact
         uses: actions/upload-artifact@v4
