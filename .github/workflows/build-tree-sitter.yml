@@ -57,11 +57,11 @@ jobs:
         run: |
           set SRC=${{ github.workspace }}\tree-sitter\lib
           set VS_VCVARS="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
-    
+          
           if "${{ matrix.arch }}"=="x64"   (set PLATFORM=x64)
           if "${{ matrix.arch }}"=="arm64" (set PLATFORM=ARM64)
           if "${{ matrix.arch }}"=="x86"   (set PLATFORM=Win32)
-    
+          
           call %VS_VCVARS% %PLATFORM%
           cd %SRC%
           mkdir build && cd build && cmake .. -A %PLATFORM% -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF
@@ -72,17 +72,8 @@ jobs:
         with:
           name: tree-sitter-${{ runner.os }}-${{ matrix.arch }}
           path: |
-            tree-sitter/lib/build/libtree-sitter.dylib
-            tree-sitter/lib/build/libtree-sitter.so
-            tree-sitter/lib/build/tree-sitter.dll
-            
-            tree-sitter-java/build/libtree-sitter-java.dylib
-            tree-sitter-java/build/libtree-sitter-java.so
-            tree-sitter-java/build/tree-sitter-java.dll
-            
-            tree-sitter-markdown/build/tree-sitter-markdown/libtree-sitter-markdown.dylib
-            tree-sitter-markdown/build/tree-sitter-markdown/libtree-sitter-markdown.so
-            tree-sitter-markdown/build/tree-sitter-markdown/tree-sitter-markdown.dll
-            tree-sitter-markdown/build/tree-sitter-markdown-inline/libtree-sitter-markdown-inline.dylib
-            tree-sitter-markdown/build/tree-sitter-markdown-inline/libtree-sitter-markdown-inline.so
-            tree-sitter-markdown/build/tree-sitter-markdown-inline/tree-sitter-markdown-inline.dll
+            tree-sitter/lib/build/**/*.dll
+            tree-sitter-java/build/**/*.dll
+            tree-sitter-markdown/build/**/*.dll
+            tree-sitter-markdown/build/**/*.dylib
+            tree-sitter-markdown/build/**/*.so
