@@ -64,8 +64,9 @@ jobs:
           
           call %VS_VCVARS% %PLATFORM%
           cd %SRC%
-          mkdir build && cd build && cmake .. -A %PLATFORM% -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF
-          msbuild ALL_BUILD.vcxproj /p:Configuration=Release /p:Platform=%PLATFORM%
+  
+          cl /LD /O2 /I lib/include lib/src/lib.c /Fe:tree-sitter.dll
+          dir
 
       - name: Upload tree-sitter artifact
         uses: actions/upload-artifact@v4
