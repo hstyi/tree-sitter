@@ -73,7 +73,7 @@ jobs:
         with:
           name: tree-sitter-${{ runner.os }}-${{ matrix.arch }}
           path: |
-            tree-sitter/lib/build/**/*.dll
+            tree-sitter/**/*.dll
             tree-sitter-java/build/**/*.dll
             tree-sitter-markdown/build/**/*.dll
             tree-sitter-markdown/build/**/*.dylib
