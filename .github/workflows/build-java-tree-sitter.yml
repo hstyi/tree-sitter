@@ -1,0 +1,35 @@
+name: Build java-tree-sitter
+
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '24'
+
+      - name: Download jextract
+        run: |
+          wget https://download.java.net/java/early_access/jextract/22/6/openjdk-22-jextract+6-47_linux-x64_bin.tar.gz
+          tar -zxvf openjdk-22-jextract+6-47_linux-x64_bin.tar.gz
+          echo "PATH=$PWD/jextract-22/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Package
+        run: |
+          mvn package -Dmaven.test.skip=true
+        working-directory: java-tree-sitter
+
+      - name: Upload java-tree-sitter artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-tree-sitter
+          path: |
+            java-tree-sitter/target/*.jar
