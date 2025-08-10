@@ -60,17 +60,17 @@ jobs:
           
           call %VS_VCVARS% ${{ matrix.arch }}
           cd %SRC%
-          mkdir build && cd build && cmake .. -G "NMake Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && nmake && nmake install
+          mkdir build && cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && msbuild tree-sitter.sln
           
           set SRC=${{ github.workspace }}\tree-sitter-java
           call %VS_VCVARS% ${{ matrix.arch }}
           cd %SRC%
-          mkdir build && cd build && cmake .. -G "NMake Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && nmake && nmake install
+          mkdir build && cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && msbuild tree-sitter.sln
           
           set SRC=${{ github.workspace }}\tree-sitter-markdown
           call %VS_VCVARS% ${{ matrix.arch }}
           cd %SRC%
-          mkdir build && cd build && cmake .. -G "NMake Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && nmake && nmake install
+          mkdir build && cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && msbuild tree-sitter.sln
 
       - name: Upload tree-sitter artifact
         uses: actions/upload-artifact@v4
