@@ -54,7 +54,8 @@ jobs:
         shell: cmd
         working-directory: tree-sitter
         run: |
-          zig c++ -g0 -fno-sanitize=undefined -shared -target x86_64-windows -I . -I lib/include lib/src/lib.c -o tree-sitter.dll
+  
+          zig build -Doptimize=ReleaseFast -Dshared=true
 
       - name: Upload tree-sitter artifact
         uses: actions/upload-artifact@v4
