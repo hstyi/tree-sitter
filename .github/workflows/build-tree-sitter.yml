@@ -1,93 +1,37 @@
 name: Build tree-sitter
 
-on: [ push ]
+on: [ push, pull_request ]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-13
-            arch: 'x64'
-          - os: macos-15
-            arch: 'aarch64'
-
-          - os: windows-11-arm
-            arch: 'arm64'
-          - os: windows-11-arm
-            arch: 'x64'
-          - os: windows-11-arm
-            arch: 'x86'
-
-          - os: ubuntu-latest
-            arch: 'x64'
-          - os: ubuntu-24.04-arm
-            arch: 'aarch64'
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          submodules: true
+          submodules: recursive
 
-      - name: Build on Unix
-        if: runner.os == 'macOS' || runner.os == 'Linux'
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+
+      - name: Setup Kotlin
+        uses: mlugg/setup-zig@v2
+
+      - uses: fwilhe2/setup-kotlin@main
+        with:
+          version: 2.2.0
+
+      - name: Build
         run: |
-          cd ${{ github.workspace }}
-          cd tree-sitter/lib
-          mkdir build && cd build && cmake .. && cmake --build .
-          
-          cd ${{ github.workspace }}
-          cd tree-sitter-java
-          mkdir build && cd build && cmake .. && cmake --build .
-          
-          cd ${{ github.workspace }}
-          cd tree-sitter-markdown
-          mkdir build && cd build && cmake .. && cmake --build .
+          ./build.main.kts
+      
 
-      - name: Add msbuild to PATH
-        if: runner.os == 'Windows'
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Build on Windows
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          set SRC=${{ github.workspace }}\tree-sitter\lib
-          set VS_VCVARS="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
-          
-          call %VS_VCVARS% ${{ matrix.arch }}
-          cd %SRC%
-          mkdir build && cd build && cmake .. -G "NMake Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && nmake && nmake install
-          
-          set SRC=${{ github.workspace }}\tree-sitter-java
-          call %VS_VCVARS% ${{ matrix.arch }}
-          cd %SRC%
-          mkdir build && cd build && cmake .. -G "NMake Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && nmake && nmake install
-          
-          set SRC=${{ github.workspace }}\tree-sitter-markdown
-          call %VS_VCVARS% ${{ matrix.arch }}
-          cd %SRC%
-          mkdir build && cd build && cmake .. -G "NMake Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF && nmake && nmake install
-
-      - name: Upload tree-sitter artifact
+      - name: Upload tree-sitters artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tree-sitter-${{ runner.os }}-${{ matrix.arch }}
+          name: tree-sitters
           path: |
-            tree-sitter/lib/build/libtree-sitter.dylib
-            tree-sitter/lib/build/libtree-sitter.so
-            tree-sitter/lib/build/tree-sitter.dll
-            
-            tree-sitter-java/build/libtree-sitter-java.dylib
-            tree-sitter-java/build/libtree-sitter-java.so
-            tree-sitter-java/build/tree-sitter-java.dll
-            
-            tree-sitter-markdown/build/tree-sitter-markdown/libtree-sitter-markdown.dylib
-            tree-sitter-markdown/build/tree-sitter-markdown/libtree-sitter-markdown.so
-            tree-sitter-markdown/build/tree-sitter-markdown/tree-sitter-markdown.dll
-            tree-sitter-markdown/build/tree-sitter-markdown-inline/libtree-sitter-markdown-inline.dylib
-            tree-sitter-markdown/build/tree-sitter-markdown-inline/libtree-sitter-markdown-inline.so
-            tree-sitter-markdown/build/tree-sitter-markdown-inline/tree-sitter-markdown-inline.dll
+            build/**/*.dll
+            build/**/*.dylib
+            build/**/*.so
