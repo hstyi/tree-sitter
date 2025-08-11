@@ -1,7 +1,6 @@
 name: Build java-tree-sitter
 
-on:
-  workflow_dispatch:
+on: [ push ]
 
 
 jobs:
