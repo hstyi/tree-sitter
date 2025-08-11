@@ -4,67 +4,34 @@ on: [ push ]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-13
-            arch: 'x64'
-          - os: macos-15
-            arch: 'aarch64'
-
-#          - os: windows-11-arm
-#            arch: 'arm64'
-          - os: windows-latest
-            arch: 'x64'
-
-          - os: ubuntu-latest
-            arch: 'x64'
-          - os: ubuntu-24.04-arm
-            arch: 'aarch64'
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          submodules: true
-
-      - name: Build on Unix
-        if: runner.os == 'macOS' || runner.os == 'Linux'
-        run: |
-          cd ${{ github.workspace }}
-          cd tree-sitter/lib
-          mkdir build && cd build && cmake .. && cmake --build .
-          
-          cd ${{ github.workspace }}
-          cd tree-sitter-java
-          mkdir build && cd build && cmake .. && cmake --build .
-          
-          cd ${{ github.workspace }}
-          cd tree-sitter-markdown
-          mkdir build && cd build && cmake .. && cmake --build .
+          submodules: recursive
 
       - name: Setup Zig
-        if: runner.os == 'Windows'
         uses: mlugg/setup-zig@v2
 
-      - name: Build on Windows
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: tree-sitter
+      - name: Setup Kotlin
+        uses: mlugg/setup-zig@v2
+
+      - uses: fwilhe2/setup-kotlin@main
+        with:
+          version: 2.2.0
+
+      - name: Build
         run: |
-          # zig build -Doptimize=ReleaseFast -Dbuild-shared=true
-          zig c++ -g0 -fno-sanitize=undefined -shared -target x86_64-windows -I lib/src -I lib/include -o tree-sitter.dll
+          ./build.main.kts
       
 
-      - name: Upload tree-sitter artifact
+      - name: Upload tree-sitters artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tree-sitter-${{ runner.os }}-${{ matrix.arch }}
+          name: tree-sitters
           path: |
-            tree-sitter/**/*.dll
-            tree-sitter-java/build/**/*.dll
-            tree-sitter-markdown/build/**/*.dll
-            tree-sitter-markdown/build/**/*.dylib
-            tree-sitter-markdown/build/**/*.so
+            build/**/*.dll
+            build/**/*.dylib
+            build/**/*.so
