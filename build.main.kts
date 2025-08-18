@@ -87,3 +87,4 @@ build("tree-sitter-markdown/tree-sitter-markdown", emptyList(), listOf("src"), l
 build("tree-sitter-markdown/tree-sitter-markdown-inline", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
 build("tree-sitter-json", emptyList(), listOf("src"), listOf("src/parser.c"))
 build("tree-sitter-html", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-javascript", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
