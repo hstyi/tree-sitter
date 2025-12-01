@@ -25,7 +25,7 @@ if (buildDir.exists().not()) {
 fun build(name: String, includeDirs: List<String>, srcDirs: List<String>, cFiles: List<String> = mutableListOf()) {
     val projectDir = File(name)
 
-    val pool = Executors.newCachedThreadPool()
+    val pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
     val futures = ArrayList<Future<*>>()
 
     for ((target, extension) in targets) {
@@ -84,7 +84,12 @@ fun build(name: String, includeDirs: List<String>, srcDirs: List<String>, cFiles
 build("tree-sitter", listOf("lib/include"), listOf("lib/src"), listOf("lib/src/lib.c"))
 build("tree-sitter-java", emptyList(), listOf("src"), listOf("src/parser.c"))
 build("tree-sitter-markdown/tree-sitter-markdown", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
-build("tree-sitter-markdown/tree-sitter-markdown-inline", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build(
+    "tree-sitter-markdown/tree-sitter-markdown-inline",
+    emptyList(),
+    listOf("src"),
+    listOf("src/parser.c", "src/scanner.c")
+)
 build("tree-sitter-json", emptyList(), listOf("src"), listOf("src/parser.c"))
 build("tree-sitter-html", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
 build("tree-sitter-javascript", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
