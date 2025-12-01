@@ -22,6 +22,10 @@ if (buildDir.exists().not()) {
     }
 }
 
+if (buildDir.exists() && buildDir.isDirectory) {
+    buildDir.deleteRecursively()
+}
+
 fun build(name: String, includeDirs: List<String>, srcDirs: List<String>, cFiles: List<String> = mutableListOf()) {
     val projectDir = File(name)
 
@@ -67,7 +71,8 @@ fun build(name: String, includeDirs: List<String>, srcDirs: List<String>, cFiles
 
             println(commands.joinToString(" "))
             val pb = ProcessBuilder(*commands.toTypedArray())
-            pb.inheritIO()
+            pb.redirectError(ProcessBuilder.Redirect.DISCARD)
+            pb.redirectOutput(ProcessBuilder.Redirect.DISCARD)
             val exitCode = pb.start().waitFor()
             if (exitCode != 0) {
                 exitProcess(exitCode)
@@ -94,3 +99,13 @@ build("tree-sitter-json", emptyList(), listOf("src"), listOf("src/parser.c"))
 build("tree-sitter-html", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
 build("tree-sitter-javascript", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
 build("tree-sitter-xml/xml", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-c", emptyList(), listOf("src"), listOf("src/parser.c"))
+build("tree-sitter-cpp", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-rust", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-go", emptyList(), listOf("src"), listOf("src/parser.c"))
+build("tree-sitter-c-sharp", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-css", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-typescript/tsx", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-typescript/typescript", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-ruby", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
+build("tree-sitter-scala", emptyList(), listOf("src"), listOf("src/parser.c", "src/scanner.c"))
