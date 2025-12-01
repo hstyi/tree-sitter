@@ -16,16 +16,13 @@ jobs:
         uses: mlugg/setup-zig@v2
 
       - name: Setup Kotlin
-        uses: mlugg/setup-zig@v2
-
-      - uses: fwilhe2/setup-kotlin@main
+        uses: fwilhe2/setup-kotlin@main
         with:
           version: 2.2.0
 
       - name: Build
         run: |
           ./build.main.kts
-      
 
       - name: Upload tree-sitters artifact
         uses: actions/upload-artifact@v4
